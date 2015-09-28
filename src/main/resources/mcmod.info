@@ -1,0 +1,16 @@
+[
+{
+  "modid": "switches",
+  "name": "Extra Switches",
+  "description": "Some additional switches",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["RedS"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
