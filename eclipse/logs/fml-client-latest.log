@@ -2106,3 +2106,7 @@ Details:
 [18:53:17] [Server thread/TRACE] [Forge/Forge]: Sent event FMLServerStoppedEvent to mod Forge
 [18:53:17] [Server thread/TRACE] [switches/switches]: Sending event FMLServerStoppedEvent to mod switches
 [18:53:17] [Server thread/TRACE] [switches/switches]: Sent event FMLServerStoppedEvent to mod switches
+[19:02:15] [Client thread/INFO] [STDOUT/]: [paulscode.sound.SoundSystemLogger:message:69]: 
+[19:02:15] [Client thread/INFO] [STDOUT/]: [paulscode.sound.SoundSystemLogger:message:69]: SoundSystem shutting down...
+[19:02:16] [Client thread/INFO] [STDOUT/]: [paulscode.sound.SoundSystemLogger:importantMessage:90]:     Author: Paul Lamb, www.paulscode.com
+[19:02:16] [Client thread/INFO] [STDOUT/]: [paulscode.sound.SoundSystemLogger:message:69]: 
