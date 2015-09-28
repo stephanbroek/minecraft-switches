@@ -8,7 +8,7 @@ growth accellerators. Allowing you to turn them on only when items are in the wa
 Current build
 ------------
 
-[https://github.com/stephanbroek/minecraft-switches/blob/master/builds/switches-0.2.0.jar?raw=true](0.2.0) - Both stone
+[0.2.0](https://github.com/stephanbroek/minecraft-switches/blob/master/builds/switches-0.2.0.jar?raw=true) - Both stone
 wooden pressure blocks working.
 
 Known bugs
