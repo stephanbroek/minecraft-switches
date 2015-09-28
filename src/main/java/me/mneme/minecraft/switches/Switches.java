@@ -21,7 +21,7 @@ import net.minecraftforge.common.MinecraftForge;
 public class Switches
 {
     public static final String MODID = "switches";
-    public static final String VERSION = "0.1.0";
+    public static final String VERSION = "0.2.0";
 
     public final static Block stonePressureBlock = new PressureBlock("stone_pressure_block",Material.rock,CreativeTabs.tabBlock,2.0f,6.0f,Block.soundTypePiston, BlockPressurePlate.Sensitivity.mobs);
     public final static Block woodenPressureBlock = new PressureBlock("wooden_pressure_block",Material.rock,CreativeTabs.tabBlock,2.0f,6.0f,Block.soundTypeWood, BlockPressurePlate.Sensitivity.everything);
