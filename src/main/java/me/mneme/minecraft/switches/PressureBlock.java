@@ -6,7 +6,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -18,9 +20,10 @@ import java.util.Random;
 public class PressureBlock extends MultiTextureBlock
 {
     private BlockPressurePlate.Sensitivity sensitivity;
-    private int tickCount;
-    private boolean active = false;
-    private boolean switched = false;
+    private int tickCount; // to be NBT (max 10) 4 bit
+    private boolean active = false; // 1 bit
+
+    // total 10 bits
 
     protected PressureBlock(String unlocalizedName, Material material, CreativeTabs creativeTab, Float hardness, Float resistance, SoundType soundType, BlockPressurePlate.Sensitivity sensitivity)
     {
@@ -48,29 +51,29 @@ public class PressureBlock extends MultiTextureBlock
 
     public int tickRate(World world)
     {
-        return 1;
+        return 5;
     }
 
     @Override
-    public void onBlockAdded(World world, int par2, int par3, int par4)
+    public void onBlockAdded(World world, int x, int y, int z)
     {
-        notifyUpdate(world, par2, par3, par4);
+        notifyUpdate(world, x, y, z);
     }
 
     @Override
-    public void breakBlock(World world, int par2, int par3, int par4, Block par5, int par6)
+    public void breakBlock(World world, int x, int y, int z, Block block, int par6)
     {
-        notifyUpdate(world, par2, par3, par4);
+        notifyUpdate(world, x, y, z);
     }
 
     @Override
-    public int isProvidingWeakPower(IBlockAccess par1, int par2, int par3, int par4, int par5)
+    public int isProvidingWeakPower(IBlockAccess par1, int x, int y, int z, int par5)
     {
         return (active) ? 15 : 0;
     }
 
     @Override
-    public int isProvidingStrongPower(IBlockAccess par1, int par2, int par3, int par4, int par5)
+    public int isProvidingStrongPower(IBlockAccess par1, int x, int y, int z, int par5)
     {
         return (active) ? 1 : 0;
     }
@@ -81,68 +84,69 @@ public class PressureBlock extends MultiTextureBlock
         return true;
     }
 
+    protected AxisAlignedBB getAABB(int x, int y, int z)
+    {
+        return AxisAlignedBB.getBoundingBox((double)x, (double)y, (double)z, (double)(x+1), (double)(y+1), (double)(z+1));
+    }
+
     @Override
-    public void onEntityCollidedWithBlock(World world, int par2, int par3, int par4, Entity entity)
+    public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity)
     {
         if(!world.isRemote && !entity.doesEntityNotTriggerPressurePlate())
         {
             switch (sensitivity)
             {
                 case everything:
-                    triggered(world, par2, par3, par4);
+                    triggered(world, x, y, z);
                     break;
                 case mobs:
-                    if(entity instanceof EntityCreature || entity instanceof EntityPlayer)
+                    if(entity instanceof EntityLivingBase)
                     {
-                        triggered(world, par2, par3, par4);
+                        triggered(world, x, y, z);
                     }
                     break;
                 case players:
                     if(entity instanceof EntityPlayer)
                     {
-                        triggered(world, par2, par3, par4);
+                        triggered(world, x, y, z);
                     }
                     break;
             }
         }
     }
 
-    private void triggered(World world, int par2, int par3, int par4)
+    private void triggered(World world, int x, int y, int z)
     {
-        tickCount = 0;
-        world.scheduleBlockUpdate(par2, par3, par4, this, 1);
-        System.out.println(par2 + "," + par3 + "," + par4 + tickCount);
         if(!active)
         {
             active = true;
-            switched = true;
+            notifyUpdate(world, x, y, z);
         }
+        tickCount = 0;
+        world.scheduleBlockUpdate(x, y, z, this, this.tickRate(world));
+        System.out.println(x + "," + y + "," + z + "," + tickCount);
     }
 
-    public void updateTick(World world, int par2, int par3, int par4, Random par5)
+    public void updateTick(World world, int x, int y, int z, Random rnd)
     {
-        if (switched)
+        if (tickCount < 1)
         {
-            notifyUpdate(world, par2, par3, par4);
-        }
-        tickCount++;
-        if (tickCount<40)
-        {
-            world.scheduleBlockUpdate(par2, par3, par4, this, 1);
+            world.scheduleBlockUpdate(x, y, z, this, this.tickRate(world));
         } else {
             active = false;
-            notifyUpdate(world, par2, par3, par4);
+            notifyUpdate(world, x, y, z);
         }
+        tickCount++;
     }
 
-    private void notifyUpdate(World world, int par2, int par3, int par4)
+    private void notifyUpdate(World world, int x, int y, int z)
     {
-        world.notifyBlockOfNeighborChange(par2 - 1, par3, par4, this);
-        world.notifyBlockOfNeighborChange(par2 + 1, par3, par4, this);
-        world.notifyBlockOfNeighborChange(par2, par3 - 1, par4, this);
-        world.notifyBlockOfNeighborChange(par2, par3 + 1, par4, this);
-        world.notifyBlockOfNeighborChange(par2, par3, par4 - 1, this);
-        world.notifyBlockOfNeighborChange(par2, par3, par4 + 1, this);
+        world.notifyBlockOfNeighborChange(x - 1, y, z, this);
+        world.notifyBlockOfNeighborChange(x + 1, y, z, this);
+        world.notifyBlockOfNeighborChange(x, y - 1, z, this);
+        world.notifyBlockOfNeighborChange(x, y + 1, z, this);
+        world.notifyBlockOfNeighborChange(x, y, z - 1, this);
+        world.notifyBlockOfNeighborChange(x, y, z + 1, this);
     }
 
 }
